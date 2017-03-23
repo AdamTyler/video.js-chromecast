@@ -21,6 +21,7 @@ class ChromeCastButton extends Button {
         super(player, options);
         this.hide();
         this.initializeApi();
+        this.options_ = player.options_;
         options.appId = player.options_.chromecast.appId;
         player.chromecast = this;
 
@@ -143,10 +144,15 @@ class ChromeCastButton extends Button {
 
         }
         //Add poster image on player
-        const poster = this.player().poster();
-        if (poster) {
-            image = new chrome.cast.Image(poster);
+        if(this.options_.metadata.poster) {
+            image = new chrome.cast.Image(this.options_.metadata.poster);
             mediaInfo.metadata.images = [image];
+        } else {
+            const poster = this.player().poster();
+            if (poster) {
+                image = new chrome.cast.Image(poster);
+                mediaInfo.metadata.images = [image];
+            }
         }
 
         // Load/Add caption tracks

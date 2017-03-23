@@ -45,6 +45,7 @@ var ChromeCastButton = (function (_Button) {
         _get(Object.getPrototypeOf(ChromeCastButton.prototype), 'constructor', this).call(this, player, options);
         this.hide();
         this.initializeApi();
+        this.options_ = player.options_;
         options.appId = player.options_.chromecast.appId;
         player.chromecast = this;
 
@@ -173,10 +174,15 @@ var ChromeCastButton = (function (_Button) {
                 }
             }
             //Add poster image on player
-            var poster = this.player().poster();
-            if (poster) {
-                image = new chrome.cast.Image(poster);
+            if (this.options_.metadata.poster) {
+                image = new chrome.cast.Image(this.options_.metadata.poster);
                 mediaInfo.metadata.images = [image];
+            } else {
+                var poster = this.player().poster();
+                if (poster) {
+                    image = new chrome.cast.Image(poster);
+                    mediaInfo.metadata.images = [image];
+                }
             }
 
             // Load/Add caption tracks
